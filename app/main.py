@@ -939,3 +939,10 @@ def main():
 
 if __name__ == "__main__":
     main()
+    st.markdown(
+        "<div style='text-align:center; margin-top:32px; color:#888; font-size:1.1rem;'>"
+        "Designed by <b>DENTITSS 36-154 Me223</b><br>"
+        "<span style='font-size:1rem;'>MOHAMED RHIZLANE</span>"
+        "</div>",
+        unsafe_allow_html=True
+    )
