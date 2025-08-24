@@ -677,16 +677,11 @@ def generate_pdf_report(data, charts, calculations, recommendations):
     pdf.cell(0, 8, "Visualizations generated from your data:", ln=True)
     pdf.ln(2)
 
-    # Add all charts as high-res images, smaller size for better layout
+    # Add chart titles only (no images) for Streamlit Cloud compatibility
     for chart_name, fig in charts.items():
-        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmpfile:
-            pio.write_image(fig, tmpfile.name, format="png", width=700, height=350, scale=2)
-            tmpfile.close()
-            pdf.set_font("Arial", "B", 12)
-            pdf.cell(0, 8, chart_name, ln=True)
-            pdf.image(tmpfile.name, w=110)  # Smaller width for better structure
-            pdf.ln(6)
-        os.unlink(tmpfile.name)
+        pdf.set_font("Arial", "B", 12)
+        pdf.cell(0, 8, chart_name + " (chart not available in cloud PDF)", ln=True)
+        pdf.ln(6)
 
     # --- Daily Analysis for Multi-sheet ---
     if data['Sheet'].nunique() > 1:
@@ -714,22 +709,12 @@ def generate_pdf_report(data, charts, calculations, recommendations):
             for activity, duration in top_activities.items():
                 pdf.cell(0, 8, f"• {activity}: {duration:.0f} min", ln=True)
             pdf.ln(2)
-            # Donut chart for the day
-            donut_fig = create_donut_chart(sheet_data, f"{sheet} - Category Distribution", height=300)
-            with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmpfile:
-                pio.write_image(donut_fig, tmpfile.name, format="png", width=700, height=300, scale=2)
-                tmpfile.close()
-                pdf.image(tmpfile.name, w=90)
-                pdf.ln(2)
-            os.unlink(tmpfile.name)
-            # Timeline chart for the day
-            timeline_fig = create_activity_timeline(sheet_data)
-            with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmpfile:
-                pio.write_image(timeline_fig, tmpfile.name, format="png", width=700, height=300, scale=2)
-                tmpfile.close()
-                pdf.image(tmpfile.name, w=90)
-                pdf.ln(4)
-            os.unlink(tmpfile.name)
+            # Donut chart and timeline chart titles only
+            pdf.set_font("Arial", "B", 12)
+            pdf.cell(0, 8, f"{sheet} - Category Distribution (chart not available in cloud PDF)", ln=True)
+            pdf.ln(2)
+            pdf.cell(0, 8, "Activity Timeline (chart not available in cloud PDF)", ln=True)
+            pdf.ln(4)
             pdf.ln(2)
 
     # Footer
